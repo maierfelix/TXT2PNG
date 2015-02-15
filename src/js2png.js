@@ -1,10 +1,15 @@
+/**
+ * JS2PNG v0.1.0
+ * www.github.com/felixmaier/JS2PNG
+ * @author Felix Maier
+ */
 (function() { 'use strict'
 
     var root = this;
 
     var JS2PNG = JS2PNG || {};
 
-    var OUTPUT_FILTERED = 0,
+    var OUTPUT_FILTERED = 0, // TODO
         OUTPUT_8BIT = 1;
 
     var BYTE_STORE = {};
@@ -22,10 +27,14 @@
     };
 
     JS2PNG.Encode = function() {
+	
+		var results = [];
 
         var data = arguments[0],
             prefix = arguments[1] || "undefined",
             size = data.length;
+			
+		if (!data || !data.length) return;
 
         for (var ii = 0, bytes = []; ii < size; ++ii) {
             bytes.push(data.charCodeAt(ii));
@@ -33,7 +42,7 @@
 
         BYTE_STORE[prefix + "_ascii"] = bytes;
         
-        BYTE_STORE.init("_ascii", data, prefix);
+        results.push(BYTE_STORE.init("_ascii", data, prefix));
 
         bytes = [];
 
@@ -63,7 +72,6 @@
 
         /**
          * Validate byte object array
-         * Convert byte object array
          */
         for (var ii in byteObject) {
             for (var kk = 0; kk < byteObject[ii].length; ++kk) {
@@ -84,7 +92,9 @@
 
         BYTE_STORE[prefix + "_seq8"] = resultArray;
         
-        BYTE_STORE.init("_seq8", data, prefix);
+		results.push(BYTE_STORE.init("_seq8", data, prefix));
+		
+        return results;
 
     };
     
@@ -94,14 +104,11 @@
         this.data = arguments[1];
         this.prefix = arguments[2];
         this.size = this.data.length;
-        
+
         var w = Math.floor(Math.sqrt(this.size)),
             h = Math.ceil(this.size / w);
 
-        if (OUTPUT_8BIT) {
-            this.create_8b(this.mode, 'square', w, h);
-        }
-
+        return this.create_8b(this.mode, 'square', w, h);
     };
     
     BYTE_STORE.create_8b = function() {
@@ -119,6 +126,7 @@
         var imageData = ctx.createImageData(w, h);
 
         var cols = [];
+
         for (var ii = 0; ii < 256; ++ii) {
             cols[ii] = ii;
         }
@@ -129,9 +137,8 @@
         for (var y = 0; y < h; ++y) {
             for (var x = 0; x < w; ++x) {
                 
-                var b1 = parseInt(data[ii]);
-
-                var col = cols[b1] ? cols[b1] : 0;
+                var b1 = parseInt(data[ii]),
+					col = cols[b1] ? cols[b1] : 0;
 
                 col = JS2PNG.DEC2HEX(col);
 
@@ -141,14 +148,10 @@
                 ii++;
             }
         }
-        
-        window.addEventListener('DOMContentLoaded', function() {
-            document.body.appendChild(canvas);
-        });
+
+		return canvas;
             
     };
-
-    JS2PNG.Encode("HelloWorldMyNameIsFelix", "Filename");
 
     root.JS2PNG = JS2PNG;
 
