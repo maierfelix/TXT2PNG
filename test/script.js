@@ -1,38 +1,45 @@
 window.addEventListener('DOMContentLoaded', function() {
 
-	var $ = function() {
-		return document.querySelector(arguments[0]);
-	}
+    var $ = function() {
+        return document.querySelector(arguments[0]);
+    }
 
-	$("#convert").addEventListener('click', function() {
+    /**
+     * ENCODE
+     */
+    $("#convert").addEventListener('click', function() {
 
-		var input = $("#code").value;
+        var input = $("#code").value;
 
-		var result = JS2PNG.Encode(input, "Filename");
+        var result = JS2PNG.Encode(input, "Filename");
 
-		$("#result").innerHTML = "";
+        $("#result").innerHTML = "";
 
-		for (var ii in result) {
-			result[ii].addEventListener('click', function() {
+        for (var ii in result) {
+            result[ii].addEventListener('click', function() {
 
-				var data = JS2PNG.Decode(result[ii]);
+                var data = JS2PNG.Decode(result[ii]);
 
-					console.log(data);
+                    console.log(data);
 
-			});
-			$("#result").appendChild(result[ii]);
-		}
+            });
+            $("#result").appendChild(result[ii]);
+        }
 
-	});
-	
-	$("#read").addEventListener('click', function() {
-		
-		var input = $("#image");
-		
-		var result = JS2PNG.Decode(input, function(response) {
-			$("#code2").value = response;
-		});
+    });
 
-	});
+    /**
+     * DECODE
+     */
+    $("#read").addEventListener('click', function() {
+
+        var input = $("#image");
+
+        var result = JS2PNG.Decode(input, function(response) {
+            $("#code2").value = response;
+            JS2PNG.Execute(response);
+        });
+
+    });
 
 });

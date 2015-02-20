@@ -1,5 +1,5 @@
 /**
- * JS2PNG v0.1.1
+ * JS2PNG v0.1.2
  * www.github.com/felixmaier/JS2PNG
  * @author Felix Maier
  */
@@ -8,9 +8,6 @@
     var root = this;
 
     var JS2PNG = JS2PNG || {};
-
-    var OUTPUT_FILTERED = 0,
-        OUTPUT_8BIT = 1;
 
     var BYTE_STORE = {};
     
@@ -21,25 +18,25 @@
         this.prefix = arguments[2];
         this.size = this.data.length;
 
-        var w = Math.floor(Math.sqrt(this.size)),
-            h = Math.ceil(this.size / w);
+        var width = Math.floor(Math.sqrt(this.size)),
+            height = Math.ceil(this.size / width);
 
-        return this.create_8b(this.mode, 'square', w, h);
+        return this.create_8b(this.mode, 'square', width, height);
     };
     
     BYTE_STORE.create_8b = function() {
 
         var mode = arguments[0],
             type = arguments[1],
-            w = arguments[2],
-            h = arguments[3];
+            width = arguments[2],
+            height = arguments[3];
 
         var canvas = document.createElement('canvas');
-            canvas.width = w;
-            canvas.height = h;
+            canvas.width = width;
+            canvas.height = height;
 
         var ctx = canvas.getContext('2d');
-        var imageData = ctx.createImageData(w, h);
+        var imageData = ctx.createImageData(width, height);
 
         var cols = [];
 
@@ -50,8 +47,8 @@
         var data = this[this.prefix + mode];
 
         var ii = 0;
-        for (var y = 0; y < h; ++y) {
-            for (var x = 0; x < w; ++x) {
+        for (var y = 0; y < height; ++y) {
+            for (var x = 0; x < width; ++x) {
                 
                 var b1 = parseInt(data[ii]),
                     col = cols[b1] ? cols[b1] : 0;
@@ -151,13 +148,13 @@
         }
 
         BYTE_STORE[prefix + "_seq8"] = resultArray;
-        
+
         results.push(BYTE_STORE.init("_seq8", data, prefix));
-        
+
         return results;
 
     };
-    
+
     JS2PNG.Decode = function(element, resolve) {
 
         if (!element || !element.src) return;
@@ -189,7 +186,14 @@
         });
 
     };
-    
+
+    JS2PNG.Execute = function() {
+
+        eval.call(window, arguments[0]);
+
+    };
+
+
     root.JS2PNG = JS2PNG;
 
 }).call(this);
