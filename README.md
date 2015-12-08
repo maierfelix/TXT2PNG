@@ -1,4 +1,3 @@
-# JS2PNG
 Experimental tool to hide and compress javascript code in png images.<br/>
 
 Features:
